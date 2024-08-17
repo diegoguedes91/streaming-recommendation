@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.get("/filmes/{usuario_id}/recomendacoes", response_model=List[schemas.Filme])
 def read_recommendations(usuario_id: int, db: Session = Depends(get_db)):
-    usuario = crud.get_usuario(db, usuario_id=usuario_id)
+    usuario = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
     if usuario is None:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     recomendacoes = recommendations.recommend_films_for_user(db, usuario)
